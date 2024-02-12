@@ -6,10 +6,10 @@ import com.example.todolist.model.*;
 import com.example.todolist.payload.PagedResponse;
 import com.example.todolist.payload.TaskRequest;
 import com.example.todolist.payload.TaskResponse;
-import com.example.todolist.payload.VoteRequest;
+// import com.example.todolist.payload.VoteRequest;
 import com.example.todolist.repository.TaskRepository;
 import com.example.todolist.repository.UserRepository;
-import com.example.todolist.repository.VoteRepository;
+// import com.example.todolist.repository.VoteRepository;
 import com.example.todolist.security.UserPrincipal;
 import com.example.todolist.util.AppConstants;
 import com.example.todolist.util.ModelMapper;
@@ -37,8 +37,8 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
-    @Autowired
-    private VoteRepository voteRepository;
+    // @Autowired
+    // private VoteRepository voteRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -49,29 +49,30 @@ public class TaskService {
         validatePageNumberAndSize(page, size);
 
         // Retrieve Tasks
+        // TODO: Custome sort follow due date field
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
-        Page<Task> todolist = taskRepository.findAll(pageable);
+        Page<Task> tasks = taskRepository.findAll(pageable);
 
-        if(todolist.getNumberOfElements() == 0) {
-            return new PagedResponse<>(Collections.emptyList(), todolist.getNumber(),
-                    todolist.getSize(), todolist.getTotalElements(), todolist.getTotalPages(), todolist.isLast());
+        if(tasks.getNumberOfElements() == 0) {
+            return new PagedResponse<>(Collections.emptyList(), tasks.getNumber(),
+                    tasks.getSize(), tasks.getTotalElements(), tasks.getTotalPages(), tasks.isLast());
         }
 
         // Map Tasks to TaskResponses containing vote counts and task creator details
-        List<Long> taskIds = todolist.map(Task::getId).getContent();
+        List<Long> taskIds = tasks.map(Task::getId).getContent();
         Map<Long, Long> choiceVoteCountMap = getChoiceVoteCountMap(taskIds);
         Map<Long, Long> taskUserVoteMap = getTaskUserVoteMap(currentUser, taskIds);
-        Map<Long, User> creatorMap = getTaskCreatorMap(todolist.getContent());
+        Map<Long, User> creatorMap = getTaskCreatorMap(tasks.getContent());
 
-        List<TaskResponse> taskResponses = todolist.map(task -> {
+        List<TaskResponse> taskResponses = tasks.map(task -> {
             return ModelMapper.mapTaskToTaskResponse(task,
                     choiceVoteCountMap,
                     creatorMap.get(task.getCreatedBy()),
                     taskUserVoteMap == null ? null : taskUserVoteMap.getOrDefault(task.getId(), null));
         }).getContent();
 
-        return new PagedResponse<>(taskResponses, todolist.getNumber(),
-                todolist.getSize(), todolist.getTotalElements(), todolist.getTotalPages(), todolist.isLast());
+        return new PagedResponse<>(taskResponses, tasks.getNumber(),
+                tasks.getSize(), tasks.getTotalElements(), tasks.getTotalPages(), tasks.isLast());
     }
 
     public PagedResponse<TaskResponse> getTasksCreatedBy(String username, UserPrincipal currentUser, int page, int size) {

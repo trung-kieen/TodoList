@@ -5,89 +5,70 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.Instant;
 import java.util.List;
 
+import javax.persistence.*;
+import javax.validation.constraints.*;
+
 public class TaskResponse {
-    private Long id;
-    private String question;
-    private List<ChoiceResponse> choices;
-    private UserSummary createdBy;
-    private Instant creationDateTime;
-    private Instant expirationDateTime;
-    private Boolean isExpired;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Long selectedChoice;
-    private Long totalVotes;
+  private Long id;
 
-    public Long getId() {
-        return id;
-    }
+  @NotBlank
+  private String title;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  @NotBlank
+  private String note;
 
-    public String getQuestion() {
-        return question;
-    }
+  private Instant due;
 
-    public void setQuestion(String question) {
-        this.question = question;
-    }
+  private int priority;
 
-    public List<ChoiceResponse> getChoices() {
-        return choices;
-    }
+  private Boolean completed;
 
-    public void setChoices(List<ChoiceResponse> choices) {
-        this.choices = choices;
-    }
-
-    public UserSummary getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(UserSummary createdBy) {
-        this.createdBy = createdBy;
-    }
+  private Instant createAt;
 
 
-    public Instant getCreationDateTime() {
-        return creationDateTime;
-    }
+  public Long getId() {
+    return id;
+  }
+  public void setId(Long id) {
+    this.id = id;
+  }
+  public String getTitle() {
+    return title;
+  }
+  public void setTitle(String title) {
+    this.title = title;
+  }
+  public String getNote() {
+    return note;
+  }
+  public void setNote(String note) {
+    this.note = note;
+  }
+  public Instant getDue() {
+    return due;
+  }
+  public void setDue(Instant due) {
+    this.due = due;
+  }
+  public int getPriority() {
+    return priority;
+  }
+  public void setPriority(int priority) {
+    this.priority = priority;
+  }
 
-    public void setCreationDateTime(Instant creationDateTime) {
-        this.creationDateTime = creationDateTime;
-    }
+  public Boolean getCompleted() {
+    return completed;
+  }
+  public void setCompleted(Boolean completed) {
+    this.completed = completed;
+  }
+  public void setCreateAt(Instant createAt) {
+    this.createAt = createAt;
+  }
+  public Instant getCreateAt() {
+    return createAt;
+  }
 
-    public Instant getExpirationDateTime() {
-        return expirationDateTime;
-    }
-
-    public void setExpirationDateTime(Instant expirationDateTime) {
-        this.expirationDateTime = expirationDateTime;
-    }
-
-    public Boolean getExpired() {
-        return isExpired;
-    }
-
-    public void setExpired(Boolean expired) {
-        isExpired = expired;
-    }
-
-    public Long getSelectedChoice() {
-        return selectedChoice;
-    }
-
-    public void setSelectedChoice(Long selectedChoice) {
-        this.selectedChoice = selectedChoice;
-    }
-
-    public Long getTotalVotes() {
-        return totalVotes;
-    }
-
-    public void setTotalVotes(Long totalVotes) {
-        this.totalVotes = totalVotes;
-    }
 }

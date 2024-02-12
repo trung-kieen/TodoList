@@ -12,10 +12,12 @@ public class TaskRequest {
 
   @NotBlank
   @Size(max = 140)
+  @Valid
   private String title;
 
   @NotBlank
   @Size(max = 140)
+  @Valid
   private String note;
 
 
@@ -24,6 +26,7 @@ public class TaskRequest {
 
 
   private int priority;
+
 
   private Boolean completed;
 

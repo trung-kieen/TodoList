@@ -4,7 +4,7 @@ import com.example.todolist.model.*;
 import com.example.todolist.payload.*;
 import com.example.todolist.repository.TaskRepository;
 import com.example.todolist.repository.UserRepository;
-import com.example.todolist.repository.VoteRepository;
+// import com.example.todolist.repository.VoteRepository;
 import com.example.todolist.security.CurrentUser;
 import com.example.todolist.security.UserPrincipal;
 import com.example.todolist.service.TaskService;
@@ -26,8 +26,8 @@ public class TaskController {
     @Autowired
     private TaskRepository taskRepository;
 
-    @Autowired
-    private VoteRepository voteRepository;
+    // @Autowired
+    // private VoteRepository voteRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -63,12 +63,13 @@ public class TaskController {
         return taskService.getTaskById(taskId, currentUser);
     }
 
-    @PostMapping("/{taskId}/votes")
-    @PreAuthorize("hasRole('USER')")
-    public TaskResponse castVote(@CurrentUser UserPrincipal currentUser,
-            @PathVariable Long taskId,
-            @Valid @RequestBody VoteRequest voteRequest) {
-        return taskService.castVoteAndGetUpdatedTask(taskId, voteRequest, currentUser);
-    }
+    // TODO: Reduce this router
+    // @PostMapping("/{taskId}/votes")
+    // @PreAuthorize("hasRole('USER')")
+    // public TaskResponse castVote(@CurrentUser UserPrincipal currentUser,
+    //         @PathVariable Long taskId,
+    //         @Valid @RequestBody VoteRequest voteRequest) {
+    //     return taskService.castVoteAndGetUpdatedTask(taskId, voteRequest, currentUser);
+    // }
 
 }
