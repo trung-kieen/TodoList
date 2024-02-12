@@ -19,29 +19,59 @@ public class Task extends UserDateAudit {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column
   @NotBlank
   @Size(max = 140)
   private String title;
 
+  @Column
   @NotBlank
   @Size(max = 140)
   private String note;
 
-  @NotNull
-  private Instant expirationDateTime;
 
+  @Column
   private Instant due;
 
+  @Column
   private int priority;
 
-  private Boolean done;
+  @Column(columnDefinition = "boolean default false")
+  private Boolean completed;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+
+
+  // NOTE: label is additional feature develop later
+
+  // @ManyToOne(fetch = FetchType.LAZY  , optional =  false)
+  // @JoinColumn(name =  "label_id", nullable =  false)
+  // private Label label;
+
+  // NOTE: those column is deplicate because Task inheritance from
+  // UserDateAudit class that specify which user create task
+
+  // @ManyToOne(fetch = FetchType.LAZY  , optional =  false)
+  // @JoinColumn(name =  "user_id", nullable =  false)
+  // private User user;
+  // public User getUser() {
+  //   return user;
+  // }
+  // public void setUser(User user) {
+  //   this.user = user;
+  // }
+
+  public Task(String title, String note, Instant due , int  priority , Boolean completed){
+    this.title  = title;
+    this.due  = due;
+    this.priority = priority;
+    this.completed  = completed;
+  }
 
   public Long getId() {
     return id;
+  }
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public int getPriority() {
@@ -52,25 +82,16 @@ public class Task extends UserDateAudit {
     this.priority = priority;
   }
 
-  public Boolean getDone() {
-    return done;
+
+  public Boolean getCompleted() {
+    return completed;
   }
 
-  public void setDone(Boolean done) {
-    this.done = done;
+  public void setCompleted(Boolean completed) {
+    this.completed = completed;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
 
-  public Instant getExpirationDateTime() {
-    return expirationDateTime;
-  }
-
-  public void setExpirationDateTime(Instant expirationDateTime) {
-    this.expirationDateTime = expirationDateTime;
-  }
 
   public Instant getDue() {
     return due;
@@ -79,5 +100,22 @@ public class Task extends UserDateAudit {
   public void setDue(Instant due) {
     this.due = due;
   }
+
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getNote() {
+    return note;
+  }
+  public void setNote(String note) {
+    this.note = note;
+  }
+
 
 }

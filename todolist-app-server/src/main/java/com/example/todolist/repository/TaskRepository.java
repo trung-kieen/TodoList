@@ -17,6 +17,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     Page<Task> findByCreatedBy(Long userId, Pageable pageable);
 
+
+    Page<Task> findByCreatedByAndCompletedFalse(Long userId, Pageable pageable);
+
     long countByCreatedBy(Long userId);
 
     List<Task> findByIdIn(List<Long> taskIds);

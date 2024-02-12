@@ -20,7 +20,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/todolist")
+@RequestMapping("/api/tasks")
 public class TaskController {
 
     @Autowired
