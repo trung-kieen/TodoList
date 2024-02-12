@@ -15,54 +15,69 @@ import java.util.List;
 @Entity
 @Table(name = "tasks")
 public class Task extends UserDateAudit {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @NotBlank
-    @Size(max = 140)
-    private String title;
+  @NotBlank
+  @Size(max = 140)
+  private String title;
 
-    @NotBlank
-    @Size(max = 140)
-    private String note;
+  @NotBlank
+  @Size(max = 140)
+  private String note;
 
-    @NotNull
-    private Instant expirationDateTime;
+  @NotNull
+  private Instant expirationDateTime;
 
+  private Instant due;
 
-    private Instant due;
+  private int priority;
 
-    private int priority;
+  private Boolean done;
 
-    private Boolean done;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
-    public Long getId() {
-        return id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public int getPriority() {
+    return priority;
+  }
 
+  public void setPriority(int priority) {
+    this.priority = priority;
+  }
 
-    public Instant getExpirationDateTime() {
-        return expirationDateTime;
-    }
+  public Boolean getDone() {
+    return done;
+  }
 
-    public void setExpirationDateTime(Instant expirationDateTime) {
-        this.expirationDateTime = expirationDateTime;
-    }
+  public void setDone(Boolean done) {
+    this.done = done;
+  }
 
+  public void setId(Long id) {
+    this.id = id;
+  }
 
+  public Instant getExpirationDateTime() {
+    return expirationDateTime;
+  }
 
-    public Instant getDue() {
-        return due;
-    }
+  public void setExpirationDateTime(Instant expirationDateTime) {
+    this.expirationDateTime = expirationDateTime;
+  }
 
-    public void setDue(Instant due) {
-        this.due = due;
-    }
+  public Instant getDue() {
+    return due;
+  }
 
+  public void setDue(Instant due) {
+    this.due = due;
+  }
 
 }
