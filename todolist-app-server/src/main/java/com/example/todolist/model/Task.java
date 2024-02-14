@@ -1,5 +1,6 @@
 package com.example.todolist.model;
 
+import com.example.todolist.model.audit.UserAudit;
 import com.example.todolist.model.audit.UserDateAudit;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "tasks")
-public class Task extends UserDateAudit {
+public class Task extends UserAudit  {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;

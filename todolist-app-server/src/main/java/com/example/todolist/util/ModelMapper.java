@@ -4,6 +4,8 @@ import com.example.todolist.model.Task;
 import com.example.todolist.model.User;
 import com.example.todolist.payload.TaskRequest;
 import com.example.todolist.payload.TaskResponse;
+import org.springframework.data.domain.Page;
+
 import com.example.todolist.payload.UserSummary;
 
 import java.time.Instant;
@@ -13,27 +15,37 @@ import java.util.stream.Collectors;
 
 public class ModelMapper {
 
-    // TODO: Refactor this file
+  // TODO: Refactor this file
 
-    public static TaskResponse mapTaskToTaskResponse(Task task) {
-        TaskResponse taskResponse = new TaskResponse();
-        taskResponse.setId(task.getId());
-        taskResponse.setTitle(task.getTitle());
-        // taskResponse.setCreateAt(task.getCreatedAt());
-        taskResponse.setDue(task.getDue());
-        taskResponse.setPriority(task.getPriority());
-        taskResponse.setCompleted(task.getCompleted());
-        taskResponse.setNote(task.getNote());
+  public static TaskResponse mapTaskToTaskResponse(Task task) {
+    TaskResponse taskResponse = new TaskResponse();
+    taskResponse.setId(task.getId());
+    taskResponse.setTitle(task.getTitle());
+    // taskResponse.setCreateAt(task.getCreatedAt());
+    taskResponse.setDue(task.getDue());
+    taskResponse.setPriority(task.getPriority());
+    taskResponse.setCompleted(task.getCompleted());
+    taskResponse.setNote(task.getNote());
 
-        // Instant now = Instant.now();
-        // taskResponse.setExpired(task.getExpirationDateTime().isBefore(now));
-        // TODO: add more property for time left of task  with current
+    // Instant now = Instant.now();
+    // taskResponse.setExpired(task.getExpirationDateTime().isBefore(now));
+    // TODO: add more property for time left of task with current
 
+    return taskResponse;
+  }
 
-        return taskResponse;
-    }
+  public static List<TaskResponse> mapTaskToTaskResponse(List<Task> tasks) {
+    // List<TaskResponse> taskResponses = tasks.
+    return tasks.stream().map(task -> mapTaskToTaskResponse(task)).collect(Collectors.toList());
+  }
 
-    public static  Task mapTaskRequestToTask(TaskRequest taskRequest){
+  public static List<TaskResponse> mapTaskToTaskResponse(Page<Task> tasks) {
+    return tasks.map(task -> {
+      return ModelMapper.mapTaskToTaskResponse(task);
+    }).getContent();
+  }
+
+  public static Task mapTaskRequestToTask(TaskRequest taskRequest) {
 
     Task task = new Task();
     task.setTitle(taskRequest.getTitle());
@@ -42,6 +54,6 @@ public class ModelMapper {
     task.setPriority(taskRequest.getPriority());
     task.setCompleted(taskRequest.getCompleted());
     return task;
-    }
+  }
 
 }

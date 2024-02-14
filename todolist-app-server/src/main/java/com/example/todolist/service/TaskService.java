@@ -6,10 +6,7 @@ import com.example.todolist.model.*;
 import com.example.todolist.payload.PagedResponse;
 import com.example.todolist.payload.TaskRequest;
 import com.example.todolist.payload.TaskResponse;
-// import com.example.todolist.payload.VoteRequest;
 import com.example.todolist.repository.TaskRepository;
-import com.example.todolist.repository.UserRepository;
-// import com.example.todolist.repository.VoteRepository;
 import com.example.todolist.security.UserPrincipal;
 import com.example.todolist.util.AppConstants;
 import com.example.todolist.util.ModelMapper;
@@ -17,21 +14,14 @@ import com.example.todolist.util.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
@@ -44,15 +34,15 @@ public class TaskService {
 
   private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
-
-
   public List<Task> getAllTasks() {
     return taskRepository.findAll();
   }
 
-  // Get all task by current user
   public PagedResponse<TaskResponse> getAllTasks(UserPrincipal currentUser, int page, int size) {
     validatePageNumberAndSize(page, size);
+
+
+
 
     // Retrieve Tasks
     // TODO: Custome sort follow due date field
@@ -64,10 +54,7 @@ public class TaskService {
           tasks.getSize(), tasks.getTotalElements(), tasks.getTotalPages(), tasks.isLast());
     }
 
-    List<TaskResponse> taskResponses = tasks.map(task -> {
-      return ModelMapper.mapTaskToTaskResponse(task);
-    }).getContent();
-
+    List<TaskResponse> taskResponses = ModelMapper.mapTaskToTaskResponse(tasks);
     return new PagedResponse<>(taskResponses, tasks.getNumber(),
         tasks.getSize(), tasks.getTotalElements(), tasks.getTotalPages(), tasks.isLast());
   }
@@ -77,6 +64,7 @@ public class TaskService {
     Long userId = userService.getUserId(username);
     return getAllTaskByUserId(userId, page, size);
   }
+
   public PagedResponse<TaskResponse> getTasksCreatedBy(String username, int page, int size) {
     validatePageNumberAndSize(page, size);
     Long userId = userService.getUserId(username);
@@ -89,11 +77,6 @@ public class TaskService {
     return getAllTaskByUserId(userId, page, size);
   }
 
-  public TaskResponse createTask(TaskRequest taskRequest, UserPrincipal currentUser) {
-    Task task = ModelMapper.mapTaskRequestToTask(taskRequest);
-    taskRepository.save(task);
-    return ModelMapper.mapTaskToTaskResponse(task);
-  }
 
   public TaskResponse getTaskById(Long taskId, UserPrincipal currentUser) {
     Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskId));
@@ -101,13 +84,20 @@ public class TaskService {
       throw new BadRequestException("User not have role to get this task information");
     } else {
     }
-
     return ModelMapper.mapTaskToTaskResponse(task);
 
   }
 
   public TaskResponse getTaskById(Long taskId) {
     Task task = taskRepository.getById(taskId);
+    return ModelMapper.mapTaskToTaskResponse(task);
+  }
+
+
+
+  public TaskResponse createTask(TaskRequest taskRequest, UserPrincipal currentUser) {
+    Task task = ModelMapper.mapTaskRequestToTask(taskRequest);
+    taskRepository.save(task);
     return ModelMapper.mapTaskToTaskResponse(task);
   }
 

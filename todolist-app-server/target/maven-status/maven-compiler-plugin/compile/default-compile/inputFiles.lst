@@ -17,6 +17,7 @@
 /home/kai/projects/TodoApp/todolist-app-server/src/main/java/com/example/todolist/model/audit/UserDateAudit.java
 /home/kai/projects/TodoApp/todolist-app-server/src/main/java/com/example/todolist/TodolistApplication.java
 /home/kai/projects/TodoApp/todolist-app-server/src/main/java/com/example/todolist/repository/TaskRepository.java
+/home/kai/projects/TodoApp/todolist-app-server/src/main/java/com/example/todolist/model/audit/UserAudit.java
 /home/kai/projects/TodoApp/todolist-app-server/src/main/java/com/example/todolist/config/AuditingConfig.java
 /home/kai/projects/TodoApp/todolist-app-server/src/main/java/com/example/todolist/controller/AuthController.java
 /home/kai/projects/TodoApp/todolist-app-server/src/main/java/com/example/todolist/payload/JwtAuthenticationResponse.java

@@ -1,2 +1,3 @@
 .DS_Store
 tags
+todolist-app-server/script/setup-database.sql

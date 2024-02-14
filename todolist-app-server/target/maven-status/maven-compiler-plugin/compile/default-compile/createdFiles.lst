@@ -36,6 +36,7 @@ com/example/todolist/payload/UserProfile.class
 com/example/todolist/config/AuditingConfig.class
 com/example/todolist/model/Task.class
 com/example/todolist/config/WebMvcConfig.class
+com/example/todolist/model/audit/UserAudit.class
 com/example/todolist/repository/LabelRepository.class
 com/example/todolist/security/CurrentUser.class
 com/example/todolist/repository/TaskRepository.class
