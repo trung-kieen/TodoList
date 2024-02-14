@@ -41,7 +41,7 @@ public class Task extends UserDateAudit {
 
 
 
-  // NOTE: label is additional feature develop later
+  // TODO: label is additional feature develop later
 
   // @ManyToOne(fetch = FetchType.LAZY  , optional =  false)
   // @JoinColumn(name =  "label_id", nullable =  false)
@@ -60,6 +60,8 @@ public class Task extends UserDateAudit {
   //   this.user = user;
   // }
 
+  public Task(){
+  }
   public Task(String title, String note, Instant due , int  priority , Boolean completed){
     this.title  = title;
     this.due  = due;

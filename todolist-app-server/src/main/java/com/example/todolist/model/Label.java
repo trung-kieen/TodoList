@@ -10,12 +10,13 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "votes", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {
-        "task_id",
-        "user_id"
-    })
-})
+// @Table(name = "labels", uniqueConstraints = {
+//     @UniqueConstraint(columnNames = {
+//         "task_id",
+//         "user_id"
+//     })
+// })
+@Table(name = "labels")
 public class Label extends UserDateAudit {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

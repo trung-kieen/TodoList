@@ -78,13 +78,5 @@ public class UserController {
     }
 
 
-    // TODO: Refactor to label by
-    @GetMapping("/users/{username}/labels")
-    public PagedResponse<TaskResponse> getTasksVotedBy(@PathVariable(value = "username") String username,
-                                                       @CurrentUser UserPrincipal currentUser,
-                                                       @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
-                                                       @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return taskService.getTasksVotedBy(username, currentUser, page, size);
-    }
 
 }

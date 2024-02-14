@@ -2,13 +2,15 @@ package com.example.todolist.controller;
 
 import com.example.todolist.model.*;
 import com.example.todolist.payload.*;
-import com.example.todolist.repository.TaskRepository;
+// import com.example.todolist.repository.TaskRepository;
 import com.example.todolist.repository.UserRepository;
 // import com.example.todolist.repository.VoteRepository;
 import com.example.todolist.security.CurrentUser;
 import com.example.todolist.security.UserPrincipal;
 import com.example.todolist.service.TaskService;
 import com.example.todolist.util.AppConstants;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +25,7 @@ import java.net.URI;
 @RequestMapping("/api/tasks")
 public class TaskController {
 
-    @Autowired
-    private TaskRepository taskRepository;
 
-    // @Autowired
-    // private VoteRepository voteRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private TaskService taskService;
@@ -46,9 +41,8 @@ public class TaskController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> createTask(@Valid @RequestBody TaskRequest taskRequest) {
-        Task task = taskService.createTask(taskRequest);
-
+    public ResponseEntity<?> createTask(@CurrentUser UserPrincipal currentUser, @Valid @RequestBody TaskRequest taskRequest) {
+        TaskResponse task = taskService.createTask(taskRequest, currentUser);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{taskId}")
                 .buildAndExpand(task.getId()).toUri();
@@ -63,13 +57,11 @@ public class TaskController {
         return taskService.getTaskById(taskId, currentUser);
     }
 
-    // TODO: Reduce this router
-    // @PostMapping("/{taskId}/votes")
-    // @PreAuthorize("hasRole('USER')")
-    // public TaskResponse castVote(@CurrentUser UserPrincipal currentUser,
-    //         @PathVariable Long taskId,
-    //         @Valid @RequestBody VoteRequest voteRequest) {
-    //     return taskService.castVoteAndGetUpdatedTask(taskId, voteRequest, currentUser);
+    // NOTE: for debug only, remove me on product
+    // @GetMapping("/all")
+    // public List<Task> getAllTasks(){
+    //   return taskService.getAllTasks();
     // }
+
 
 }
