@@ -14,6 +14,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -36,19 +37,14 @@ public class TaskController {
     public PagedResponse<TaskResponse> getTasks(@CurrentUser UserPrincipal currentUser,
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return taskService.getAllTasks(currentUser, page, size);
+            return taskService.getTasksCreatedBy(currentUser, page, size);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createTask(@CurrentUser UserPrincipal currentUser, @Valid @RequestBody TaskRequest taskRequest) {
         TaskResponse task = taskService.createTask(taskRequest, currentUser);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{taskId}")
-                .buildAndExpand(task.getId()).toUri();
-
-        return ResponseEntity.created(location)
-                .body(new ApiResponse(true, "Task Created Successfully"));
+        return ResponseEntity.ok(task);
     }
 
     @GetMapping("/{taskId}")
@@ -56,12 +52,5 @@ public class TaskController {
             @PathVariable Long taskId) {
         return taskService.getTaskById(taskId, currentUser);
     }
-
-    // NOTE: for debug only, remove me on product
-    // @GetMapping("/all")
-    // public List<Task> getAllTasks(){
-    //   return taskService.getAllTasks();
-    // }
-
 
 }

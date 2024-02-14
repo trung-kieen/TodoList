@@ -34,17 +34,15 @@ public class TaskService {
 
   private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
+
+  // Get all task not require user role
   public List<Task> getAllTasks() {
     return taskRepository.findAll();
   }
 
+  // Get all task require to have user role
   public PagedResponse<TaskResponse> getAllTasks(UserPrincipal currentUser, int page, int size) {
     validatePageNumberAndSize(page, size);
-
-
-
-
-    // Retrieve Tasks
     // TODO: Custome sort follow due date field
     Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
     Page<Task> tasks = taskRepository.findAll(pageable);
@@ -78,8 +76,10 @@ public class TaskService {
   }
 
 
+
   public TaskResponse getTaskById(Long taskId, UserPrincipal currentUser) {
     Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskId));
+    // User only able to get task they own
     if (!task.getCreatedBy().equals(currentUser.getId())) {
       throw new BadRequestException("User not have role to get this task information");
     } else {
