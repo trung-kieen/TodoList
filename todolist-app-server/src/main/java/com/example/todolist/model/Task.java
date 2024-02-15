@@ -120,5 +120,9 @@ public class Task extends UserAudit  {
     this.note = note;
   }
 
+  @Override
+  public String toString (){
+    return title;
+  }
 
 }

@@ -27,5 +27,4 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findByIdIn(List<Long> taskIds);
 
-    // List<Task> findByIdIn(List<Long> taskIds, Sort sort);
 }

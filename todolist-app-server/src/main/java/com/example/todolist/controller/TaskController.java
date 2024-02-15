@@ -27,7 +27,6 @@ import java.net.URI;
 public class TaskController {
 
 
-
     @Autowired
     private TaskService taskService;
 
@@ -52,5 +51,9 @@ public class TaskController {
             @PathVariable Long taskId) {
         return taskService.getTaskById(taskId, currentUser);
     }
+
+
+
+
 
 }
