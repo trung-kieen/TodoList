@@ -24,15 +24,10 @@ class TaskList extends Component {
     this.handleLoadMore = this.handleLoadMore.bind(this);
   }
 
-  loadTaskList(page = 0, size = POLL_LIST_SIZE) {
-    let promise = getAllTasks(page, size);
-
-    if (!promise) {
-      return;
-    }
+  async loadTaskList(page = 0, size = POLL_LIST_SIZE) {
 
     try {
-      let respPage = getAllTasks(page, size);
+      let respPage = await getAllTasks(page, size);
       const tasks = this.state.tasks.slice();
       this.setState({
         isLoading: true
@@ -57,7 +52,8 @@ class TaskList extends Component {
 
   loadDemoTaskList() {
     this.setState({
-      tasks: [{ title: "Get up early", note: "before 10pm" }, { title: "Learn new language", note: "have a good plan" }],
+      tasks: [{ title: "Get up early", note: "before 10pm", completed: true },
+      { title: "Learn new language", note: "have a good plan", completed: false }],
       page: 1,
       size: 10,
       totalElements: 2,
