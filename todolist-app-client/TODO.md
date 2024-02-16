@@ -1,1 +1,0 @@
-- [ ]  Make router compatible with react, react-dom v6
