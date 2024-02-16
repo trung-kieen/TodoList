@@ -21,8 +21,8 @@ class Task extends Component {
     }
 
     getWinningChoice = () => {
-        return this.props.task.choices.reduce((prevChoice, currentChoice) => 
-            currentChoice.voteCount > prevChoice.voteCount ? currentChoice : prevChoice, 
+        return this.props.task.choices.reduce((prevChoice, currentChoice) =>
+            currentChoice.voteCount > prevChoice.voteCount ? currentChoice : prevChoice,
             {voteCount: -Infinity}
         );
     }
@@ -30,15 +30,15 @@ class Task extends Component {
     getTimeRemaining = (task) => {
         const expirationTime = new Date(task.expirationDateTime).getTime();
         const currentTime = new Date().getTime();
-    
+
         var difference_ms = expirationTime - currentTime;
         var seconds = Math.floor( (difference_ms/1000) % 60 );
         var minutes = Math.floor( (difference_ms/1000/60) % 60 );
         var hours = Math.floor( (difference_ms/(1000*60*60)) % 24 );
         var days = Math.floor( difference_ms/(1000*60*60*24) );
-    
+
         let timeRemaining;
-    
+
         if(days > 0) {
             timeRemaining = days + " days left";
         } else if (hours > 0) {
@@ -50,7 +50,7 @@ class Task extends Component {
         } else {
             timeRemaining = "less than a second left";
         }
-        
+
         return timeRemaining;
     }
 
@@ -60,25 +60,25 @@ class Task extends Component {
             const winningChoice = this.props.task.expired ? this.getWinningChoice() : null;
 
             this.props.task.choices.forEach(choice => {
-                taskChoices.push(<CompletedOrVotedTaskChoice 
-                    key={choice.id} 
+                taskChoices.push(<CompletedOrVotedTaskChoice
+                    key={choice.id}
                     choice={choice}
                     isWinner={winningChoice && choice.id === winningChoice.id}
                     isSelected={this.isSelected(choice)}
-                    percentVote={this.calculatePercentage(choice)} 
+                    percentVote={this.calculatePercentage(choice)}
                 />);
-            });                
+            });
         } else {
             this.props.task.choices.forEach(choice => {
                 taskChoices.push(<Radio className="task-choice-radio" key={choice.id} value={choice.id}>{choice.text}</Radio>)
-            })    
-        }        
+            })
+        }
         return (
             <div className="task-content">
                 <div className="task-header">
                     <div className="task-creator-info">
                         <Link className="creator-link" to={`/users/${this.props.task.createdBy.username}`}>
-                            <Avatar className="task-creator-avatar" 
+                            <Avatar className="task-creator-avatar"
                                 style={{ backgroundColor: getAvatarColor(this.props.task.createdBy.name)}} >
                                 {this.props.task.createdBy.name[0].toUpperCase()}
                             </Avatar>
@@ -98,17 +98,17 @@ class Task extends Component {
                     </div>
                 </div>
                 <div className="task-choices">
-                    <RadioGroup 
-                        className="task-choice-radio-group" 
-                        onChange={this.props.handleVoteChange} 
+                    <RadioGroup
+                        className="task-choice-radio-group"
+                        onChange={this.props.handleVoteChange}
                         value={this.props.currentVote}>
                         { taskChoices }
                     </RadioGroup>
                 </div>
                 <div className="task-footer">
-                    { 
+                    {
                         !(this.props.task.selectedChoice || this.props.task.expired) ?
-                        (<Button className="vote-button" disabled={!this.props.currentVote} onClick={this.props.handleVoteSubmit}>Vote</Button>) : null 
+                        (<Button className="vote-button" disabled={!this.props.currentVote} onClick={this.props.handleVoteSubmit}>Vote</Button>) : null
                     }
                     <span className="total-votes">{this.props.task.totalVotes} votes</span>
                     <span className="separator">•</span>
@@ -130,7 +130,7 @@ function CompletedOrVotedTaskChoice(props) {
             <span className="cv-task-choice-details">
                 <span className="cv-choice-percentage">
                     {Math.round(props.percentVote * 100) / 100}%
-                </span>            
+                </span>
                 <span className="cv-choice-text">
                     {props.choice.text}
                 </span>
@@ -140,9 +140,9 @@ function CompletedOrVotedTaskChoice(props) {
                         className="selected-choice-icon"
                         type="check-circle-o"
                     /> ): null
-                }    
+                }
             </span>
-            <span className={props.isWinner ? 'cv-choice-percent-chart winner': 'cv-choice-percent-chart'} 
+            <span className={props.isWinner ? 'cv-choice-percent-chart winner': 'cv-choice-percent-chart'}
                 style={{width: props.percentVote + '%' }}>
             </span>
         </div>
