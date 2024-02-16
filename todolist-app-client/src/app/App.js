@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
-import { Route, Routes, withRouter, BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Route, Routes, withRouter } from "react-router-dom";
 
 import { getCurrentUser } from "../util/APIUtils";
 import { ACCESS_TOKEN } from "../constants";
@@ -16,6 +16,7 @@ import LoadingIndicator from "../common/LoadingIndicator";
 import PrivateRoute from "../common/PrivateRoute";
 
 import { Layout, notification } from "antd";
+import { notificationError, notificationSuccess } from "../util/Helpers";
 const { Content } = Layout;
 
 class App extends Component {
@@ -25,85 +26,67 @@ class App extends Component {
       currentUser: null,
       isAuthenticated: false,
       isLoading: true,
-    };
+    }
+    // Bind class method pass in class constructor with new context this
     this.handleLogout = this.handleLogout.bind(this);
-    this.loadCurrentUser = this.loadCurrentUser.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
-
-    notification.config({
-      placement: "topRight",
-      top: 70,
-      duration: 3,
-    });
-  }
-
-  loadCurrentUser() {
-    getCurrentUser()
-      .then((response) => {
-        this.setState({
-          currentUser: response,
-          isAuthenticated: true,
-          isLoading: false,
-        });
-      })
-      .catch((error) => {
-        this.setState({
-          isLoading: false,
-        });
-      });
-  }
-
-  componentDidMount() {
-    this.loadCurrentUser();
   }
 
   handleLogout(
     redirectTo = "/",
-    notificationType = "success",
-    description = "You're successfully logged out."
+    description = "You're successfully logout."
   ) {
     localStorage.removeItem(ACCESS_TOKEN);
-
     this.setState({
       currentUser: null,
       isAuthenticated: false,
-    });
 
+    })
     this.props.history.push(redirectTo);
-
-    notification[notificationType]({
-      message: "Tasking App",
-      description: description,
-    });
+    notificationSuccess(description);
   }
 
-  handleLogin() {
-    notification.success({
-      message: "Tasking App",
-      description: "You're successfully logged in.",
-    });
+
+  loadCurrentUser = async () => {
+    try {
+      const user = await getCurrentUser();
+      this.setState({
+        currentUser: user,
+        isAuthenticated: true,
+        isLoading: false,
+      })
+    } catch (e) {
+      notificationError(e);
+    }
+  }
+  handleLogin(description = "You're successfully login.") {
+    notificationSuccess(description);
     this.loadCurrentUser();
     this.props.history.push("/");
+
   }
 
+  // TODO: implement router
   render() {
-    if (this.state.isLoading) {
-      return <LoadingIndicator />;
+    if (this.props.isLoading) {
+
+      return <LoadingIndicator />
     }
 
     return (
-      <Layout className="app-container">
+      <Layout className="app-container" >
         <AppHeader
           isAuthenticated={this.state.isAuthenticated}
           currentUser={this.state.currentUser}
           onLogout={this.handleLogout}
         />
-
         <Content className="app-content">
           <div className="container">
             <BrowserRouter>
               <Routes>
                 <Route
+                  // TODO: change private route in prod
+                  // <PrivateRoute
                   exact
                   path="/"
                   render={(props) => (
@@ -114,7 +97,9 @@ class App extends Component {
                       {...props}
                     />
                   )}
+                // ></PrivateRoute>
                 ></Route>
+
                 <Route
                   path="/login"
                   render={(props) => (
@@ -138,13 +123,17 @@ class App extends Component {
                   component={NewTask}
                   handleLogout={this.handleLogout}
                 ></PrivateRoute>
-                <Route component={NotFound}></Route>
+
+
               </Routes>
+
             </BrowserRouter>
+
           </div>
+
         </Content>
       </Layout>
-    );
+    )
   }
 }
 
