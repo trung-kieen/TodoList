@@ -32,7 +32,6 @@ class TaskList extends Component {
     }
 
     try {
-
       let respPage = getAllTasks(page, size);
       const tasks = this.state.tasks.slice();
       this.setState({
@@ -54,12 +53,23 @@ class TaskList extends Component {
       });
 
     }
-
-
   }
 
+  loadDemoTaskList() {
+    this.setState({
+      tasks: [{ title: "Get up early", note: "before 10pm" }, { title: "Learn new language", note: "have a good plan" }],
+      page: 1,
+      size: 10,
+      totalElements: 2,
+      totalPages: 1,
+      last: true,
+      isLoading: false
+    })
+
+  }
   componentDidMount() {
-    this.loadTaskList();
+    // this.loadTaskList();
+    this.loadDemoTaskList();
   }
 
   componentDidUpdate(nextProps) {
@@ -85,11 +95,10 @@ class TaskList extends Component {
 
   render() {
     const taskViews = [];
-    this.state.tasks.forEach((task, taskIndex) => {
+    this.state.tasks.forEach((task) => {
       taskViews.push(<Task
-        key={task.id}
         task={task}
-        />)
+      />)
     });
 
     return (
