@@ -1,12 +1,12 @@
 .tasks-container {
     max-width: 600px;
     margin: 0 auto;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .task-content {
-    margin-bottom: 30px;
-    padding: 20px 15px 20px 15px;
+    margin-bottom: 10px;
+    padding: 10px 10px 10px 10px;
     letter-spacing: .01em;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.08);
 }
@@ -15,7 +15,7 @@
     font-weight: 500;
     font-size: 16px;
     color: rgba(0, 0, 0, 0.85);
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 @media (max-width: 768px) {
@@ -25,8 +25,9 @@
 }
 
 .task-note {
-    margin-top: 5px;
-    margin-bottom: 15px;
+    /* margin-top: 5px; */
+    /* margin-bottom: 5px; */
+    margin-left: 1.8em;
 }
 
 .task-choice-radio-group {

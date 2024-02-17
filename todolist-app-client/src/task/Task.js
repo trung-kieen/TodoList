@@ -1,35 +1,53 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import './Task.css';
-import { Avatar, Checkbox, Icon } from 'antd';
-import { Link } from 'react-router-dom';
-import { getAvatarColor } from '../util/Colors';
-import { formatDateTime } from '../util/Helpers';
-
+import { Checkbox, Modal } from 'antd';
+// import { Link } from 'react-router-dom';
+import { getTimeRemaining } from '../util/Helpers';
 import { Radio, Button } from 'antd';
-const RadioGroup = Radio.Group;
-
 class Task extends Component {
   constructor(props) {
     super(props);
+    this.task = this.props.task;
   }
-  onChange (e) {
-    console.log(`checked = ${e.target.checked}`);
-  };
 
+
+  handleTooggle(event) {
+    this.task.completed = event.target.checked;
+    this.props.handleUpdateTask(this.task);
+  }
   render() {
-    return (
-      <div className="task-content">
-        <div className="task-title">
-          <Checkbox onChange={this.onChange} defaultChecked={this.props.task.completed}>{this.props.task.title}</Checkbox>
 
+    return (
+      <div key={this.task.id} className="task-content">
+        <div className="task-title">
+          {this.checkBoxTitle()}
         </div>
         <div className="task-note">
-          {this.props.task.note}
+          {this.task.note}
         </div>
+        {this.dueDate()}
       </div>
 
     )
   }
+  dueDate() {
+    return (
+      <div className="task-due">
+        {this.task.due ? getTimeRemaining(this.task.due) : null}
+      </div>
+    )
+  }
+  checkBoxTitle() {
+    return (
+      <Checkbox className="task-completed" onChange={event => this.handleTooggle(event)} defaultChecked={this.task.completed}>
+        {
+          this.task.completed ? (<del>{this.task.title}</del>) : (<span> {this.task.title}</span>)
+        }
+      </Checkbox>
+    )
+
+  }
+
 }
 
 

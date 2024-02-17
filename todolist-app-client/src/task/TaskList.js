@@ -21,6 +21,7 @@ class TaskList extends Component {
       isLoading: false
     };
     this.loadTaskList = this.loadTaskList.bind(this);
+    this.handleUpdateTask = this.handleUpdateTask.bind(this);
     this.handleLoadMore = this.handleLoadMore.bind(this);
   }
 
@@ -52,8 +53,8 @@ class TaskList extends Component {
 
   loadDemoTaskList() {
     this.setState({
-      tasks: [{ title: "Get up early", note: "before 10pm", completed: true },
-      { title: "Learn new language", note: "have a good plan", completed: false }],
+      tasks: [{ id: 1, title: "Get up early", note: "before 10pm", completed: true },
+      { id: 2, title: "Learn new language", note: "have a good plan", completed: false }],
       page: 1,
       size: 10,
       totalElements: 2,
@@ -88,12 +89,26 @@ class TaskList extends Component {
     this.loadTaskList(this.state.page + 1);
   }
 
-
+  // TODO copy cat with deleted task
+  handleUpdateTask(newTask) {
+    // TODO: request update to server => Push result at notification
+    let newTasks = this.state.tasks.map(oldTask => {
+      return oldTask.id == newTask.id ? newTask : oldTask
+    })
+    console.log(this.state.tasks);
+    this.setState({
+      // Copy old property value of this object
+      ...this.state,
+      // Update value of single change task
+      tasks: newTasks,
+    })
+  }
   render() {
     const taskViews = [];
     this.state.tasks.forEach((task) => {
       taskViews.push(<Task
         task={task}
+        handleUpdateTask={this.handleUpdateTask}
       />)
     });
 
