@@ -66,5 +66,3 @@ npm install && npm start
 ```
 
 The front-end server will start on port `3000`.
-# Credit
-[Origin repo](https://github.com/callicoder/spring-security-react-ant-design-todolist-app)
