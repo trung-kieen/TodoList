@@ -1,182 +1,174 @@
 import React, { Component } from 'react';
-import { getAllTasks, getUserCreatedTasks, getUserVotedTasks } from '../util/APIUtils';
+import { getAllTasks } from '../util/APIUtils';
 import Task from './Task';
-import { castVote } from '../util/APIUtils';
-import LoadingIndicator  from '../common/LoadingIndicator';
-import { Button, Icon, notification } from 'antd';
+import LoadingIndicator from '../common/LoadingIndicator';
+import { Button, Icon } from 'antd';
 import { POLL_LIST_SIZE } from '../constants';
 import { withRouter } from 'react-router-dom';
 import './TaskList.css';
+import AddTask from './AddTask';
 
 class TaskList extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            tasks: [],
-            page: 0,
-            size: 10,
-            totalElements: 0,
-            totalPages: 0,
-            last: true,
-            currentVotes: [],
-            isLoading: false
-        };
-        this.loadTaskList = this.loadTaskList.bind(this);
-        this.handleLoadMore = this.handleLoadMore.bind(this);
+  constructor(props) {
+    super(props);
+    this.state = {
+      tasks: [],
+      page: 0,
+      size: 10,
+      totalElements: 0,
+      totalPages: 0,
+      last: true,
+      isLoading: false,
+      show: false,
+    };
+    this.loadTaskList = this.loadTaskList.bind(this);
+    this.handleUpdateTask = this.handleUpdateTask.bind(this);
+    this.handleLoadMore = this.handleLoadMore.bind(this);
+    this.showModal = this.showModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
+  }
+
+  showModal() {
+    this.setState({ ...this.state, show: true });
+  };
+
+  hideModal() {
+    this.setState({ ...this.state, show: false });
+  };
+
+  async loadTaskList(page = 0, size = POLL_LIST_SIZE) {
+
+    try {
+      let respPage = await getAllTasks(page, size);
+      const tasks = this.state.tasks.slice();
+      this.setState({
+        ... this.state,
+        isLoading: true
+      });
+      this.setState({
+        tasks: tasks.concat(respPage.content),
+        page: respPage.page,
+        size: respPage.size,
+        totalElements: respPage.totalElements,
+        totalPages: respPage.totalPages,
+        last: respPage.last,
+        isLoading: false,
+        show: false
+
+      })
     }
+    finally {
+      this.setState({
+        ... this.state,
+        isLoading: false
+      });
 
-    loadTaskList(page = 0, size = POLL_LIST_SIZE) {
-        let promise;
-        if(this.props.username) {
-            if(this.props.type === 'USER_CREATED_POLLS') {
-                promise = getUserCreatedTasks(this.props.username, page, size);
-            } else if (this.props.type === 'USER_VOTED_POLLS') {
-                promise = getUserVotedTasks(this.props.username, page, size);                               
-            }
-        } else {
-            promise = getAllTasks(page, size);
-        }
-
-        if(!promise) {
-            return;
-        }
-
-        this.setState({
-            isLoading: true
-        });
-
-        promise            
-        .then(response => {
-            const tasks = this.state.tasks.slice();
-            const currentVotes = this.state.currentVotes.slice();
-
-            this.setState({
-                tasks: tasks.concat(response.content),
-                page: response.page,
-                size: response.size,
-                totalElements: response.totalElements,
-                totalPages: response.totalPages,
-                last: response.last,
-                currentVotes: currentVotes.concat(Array(response.content.length).fill(null)),
-                isLoading: false
-            })
-        }).catch(error => {
-            this.setState({
-                isLoading: false
-            })
-        });  
-        
     }
+  }
 
-    componentDidMount() {
-        this.loadTaskList();
+  loadDemoTaskList() {
+    this.setState({
+      tasks: [{ id: 1, title: "Get up early", note: "before 10pm", completed: true },
+      { id: 2, title: "Learn new language", note: "have a good plan", completed: false }],
+      page: 1,
+      size: 10,
+      totalElements: 2,
+      totalPages: 1,
+      last: true,
+      isLoading: false
+    })
+
+  }
+  componentDidMount() {
+    // this.loadTaskList();
+    this.loadDemoTaskList();
+  }
+
+  componentDidUpdate(nextProps) {
+    if (this.props.isAuthenticated !== nextProps.isAuthenticated) {
+      // Reset State
+      this.setState({
+        tasks: [],
+        page: 0,
+        size: 10,
+        totalElements: 0,
+        totalPages: 0,
+        last: true,
+        isLoading: false
+      });
+      this.loadTaskList();
     }
+  }
 
-    componentDidUpdate(nextProps) {
-        if(this.props.isAuthenticated !== nextProps.isAuthenticated) {
-            // Reset State
-            this.setState({
-                tasks: [],
-                page: 0,
-                size: 10,
-                totalElements: 0,
-                totalPages: 0,
-                last: true,
-                currentVotes: [],
-                isLoading: false
-            });    
-            this.loadTaskList();
-        }
-    }
+  handleLoadMore() {
+    this.loadTaskList(this.state.page + 1);
+  }
 
-    handleLoadMore() {
-        this.loadTaskList(this.state.page + 1);
-    }
-
-    handleVoteChange(event, taskIndex) {
-        const currentVotes = this.state.currentVotes.slice();
-        currentVotes[taskIndex] = event.target.value;
-
-        this.setState({
-            currentVotes: currentVotes
-        });
-    }
+  // TODO copy cat with deleted task
+  handleUpdateTask(newTask) {
+    // TODO: request update to server => Push result at notification
+    let newTasks = this.state.tasks.map(oldTask => {
+      return oldTask.id === newTask.id ? newTask : oldTask
+    })
+    console.log(this.state.tasks);
+    this.setState({
+      // Copy old property value of this object
+      ...this.state,
+      // Update value of single change task
+      tasks: newTasks,
+    })
+  }
+  render() {
+    const taskViews = [];
+    this.state.tasks.forEach((task) => {
+      taskViews.push(<Task
+        task={task}
+        key={task.id}
+        handleUpdateTask={this.handleUpdateTask}
+      />)
+    });
 
 
-    handleVoteSubmit(event, taskIndex) {
-        event.preventDefault();
-        if(!this.props.isAuthenticated) {
-            this.props.history.push("/login");
-            notification.info({
-                message: 'Tasking App',
-                description: "Please login to vote.",          
-            });
-            return;
-        }
+    return (
+      <div>
+        <div>
+        </div>
+        <div className="tasks-container">
+          <Button type="button" onClick={this.showModal}>
+            Add task
+          </Button>
+          {taskViews}
+          <AddTask show={this.state.show} onCancel={() => { this.hideModal() }} onCreate={() => { console.log("create") }}  />
 
-        const task = this.state.tasks[taskIndex];
-        const selectedChoice = this.state.currentVotes[taskIndex];
+          {
+            !this.state.isLoading && this.state.tasks.length === 0 ? (
+              <div className="no-tasks-found">
+                <span>No Tasks Found.</span>
+              </div>
+            ) : null
+          }
+          {
+            !this.state.isLoading && !this.state.last ? (
+              <div className="load-more-tasks">
+                <Button type="dashed" onClick={this.handleLoadMore} disabled={this.state.isLoading}>
+                  <Icon type="plus" /> Load more
+                </Button>
+              </div>) : null
+          }
+          {
 
-        const voteData = {
-            taskId: task.id,
-            choiceId: selectedChoice
-        };
 
-        castVote(voteData)
-        .then(response => {
-            const tasks = this.state.tasks.slice();
-            tasks[taskIndex] = response;
-            this.setState({
-                tasks: tasks
-            });        
-        }).catch(error => {
-            if(error.status === 401) {
-                this.props.handleLogout('/login', 'error', 'You have been logged out. Please login to vote');    
-            } else {
-                notification.error({
-                    message: 'Tasking App',
-                    description: error.message || 'Sorry! Something went wrong. Please try again!'
-                });                
-            }
-        });
-    }
+            this.state.isLoading ?
+              <LoadingIndicator /> : null
 
-    render() {
-        const taskViews = [];
-        this.state.tasks.forEach((task, taskIndex) => {
-            taskViews.push(<Task 
-                key={task.id} 
-                task={task}
-                currentVote={this.state.currentVotes[taskIndex]} 
-                handleVoteChange={(event) => this.handleVoteChange(event, taskIndex)}
-                handleVoteSubmit={(event) => this.handleVoteSubmit(event, taskIndex)} />)            
-        });
+          }
 
-        return (
-            <div className="tasks-container">
-                {taskViews}
-                {
-                    !this.state.isLoading && this.state.tasks.length === 0 ? (
-                        <div className="no-tasks-found">
-                            <span>No Tasks Found.</span>
-                        </div>    
-                    ): null
-                }  
-                {
-                    !this.state.isLoading && !this.state.last ? (
-                        <div className="load-more-tasks"> 
-                            <Button type="dashed" onClick={this.handleLoadMore} disabled={this.state.isLoading}>
-                                <Icon type="plus" /> Load more
-                            </Button>
-                        </div>): null
-                }              
-                {
-                    this.state.isLoading ? 
-                    <LoadingIndicator />: null                     
-                }
-            </div>
-        );
-    }
+        </div>
+      </div>
+    );
+
+  }
+
 }
 
 export default withRouter(TaskList);

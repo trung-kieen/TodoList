@@ -5,7 +5,7 @@ import com.example.todolist.model.User;
 import com.example.todolist.payload.*;
 import com.example.todolist.repository.TaskRepository;
 import com.example.todolist.repository.UserRepository;
-import com.example.todolist.repository.VoteRepository;
+// import com.example.todolist.repository.VoteRepository;
 import com.example.todolist.security.UserPrincipal;
 import com.example.todolist.service.TaskService;
 import com.example.todolist.security.CurrentUser;
@@ -26,8 +26,8 @@ public class UserController {
     @Autowired
     private TaskRepository taskRepository;
 
-    @Autowired
-    private VoteRepository voteRepository;
+    // @Autowired
+    // private VoteRepository voteRepository;
 
     @Autowired
     private TaskService taskService;
@@ -59,14 +59,17 @@ public class UserController {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
         long taskCount = taskRepository.countByCreatedBy(user.getId());
-        long voteCount = voteRepository.countByUserId(user.getId());
 
-        UserProfile userProfile = new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt(), taskCount, voteCount);
+        // TODO update to fit label count by aggreate label by user
+        // long voteCount = voteRepository.countByUserId(user.getId());
+        // Note: voteCount now change to label count for temporary
+        long labelCount = 0;
+        UserProfile userProfile = new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt(), taskCount, labelCount);
 
         return userProfile;
     }
 
-    @GetMapping("/users/{username}/todolist")
+    @GetMapping("/users/{username}/tasks")
     public PagedResponse<TaskResponse> getTasksCreatedBy(@PathVariable(value = "username") String username,
                                                          @CurrentUser UserPrincipal currentUser,
                                                          @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
@@ -74,12 +77,6 @@ public class UserController {
         return taskService.getTasksCreatedBy(username, currentUser, page, size);
     }
 
-    @GetMapping("/users/{username}/votes")
-    public PagedResponse<TaskResponse> getTasksVotedBy(@PathVariable(value = "username") String username,
-                                                       @CurrentUser UserPrincipal currentUser,
-                                                       @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
-                                                       @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return taskService.getTasksVotedBy(username, currentUser, page, size);
-    }
+
 
 }

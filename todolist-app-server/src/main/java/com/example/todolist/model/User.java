@@ -25,22 +25,27 @@ public class User extends DateAudit {
 
     @NotBlank
     @Size(max = 40)
+    @Column
     private String name;
 
     @NotBlank
     @Size(max = 15)
+    @Column
     private String username;
 
     @NaturalId
     @NotBlank
     @Size(max = 40)
     @Email
+    @Column
     private String email;
 
     @NotBlank
     @Size(max = 100)
+    @Column
     private String password;
 
+    @Column
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
