@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { getAllTasks, getUserCreatedTasks, getUserVotedTasks } from '../util/APIUtils';
+import { getAllTasks } from '../util/APIUtils';
 import Task from './Task';
-import { castVote } from '../util/APIUtils';
 import LoadingIndicator from '../common/LoadingIndicator';
-import { Button, Icon, notification, Modal } from 'antd';
+import { Button, Icon } from 'antd';
 import { POLL_LIST_SIZE } from '../constants';
 import { withRouter } from 'react-router-dom';
 import './TaskList.css';
-import AddTaskForm from '../component/AddTaskForm';
+import AddTask from './AddTask';
 
 class TaskList extends Component {
   constructor(props) {
@@ -29,11 +28,11 @@ class TaskList extends Component {
     this.hideModal = this.hideModal.bind(this);
   }
 
-  showModal = () => {
+  showModal() {
     this.setState({ ...this.state, show: true });
   };
 
-  hideModal = () => {
+  hideModal() {
     this.setState({ ...this.state, show: false });
   };
 
@@ -53,7 +52,9 @@ class TaskList extends Component {
         totalElements: respPage.totalElements,
         totalPages: respPage.totalPages,
         last: respPage.last,
-        isLoading: false
+        isLoading: false,
+        show: false
+
       })
     }
     finally {
@@ -107,7 +108,7 @@ class TaskList extends Component {
   handleUpdateTask(newTask) {
     // TODO: request update to server => Push result at notification
     let newTasks = this.state.tasks.map(oldTask => {
-      return oldTask.id == newTask.id ? newTask : oldTask
+      return oldTask.id === newTask.id ? newTask : oldTask
     })
     console.log(this.state.tasks);
     this.setState({
@@ -127,6 +128,7 @@ class TaskList extends Component {
       />)
     });
 
+
     return (
       <div>
         <div>
@@ -135,8 +137,9 @@ class TaskList extends Component {
           <Button type="button" onClick={this.showModal}>
             Add task
           </Button>
-          <AddTaskForm show={this.state.show} handleClose={this.hideModal} />
           {taskViews}
+          <AddTask show={this.state.show} onCancel={() => { this.hideModal() }} onCreate={() => { console.log("create") }}  />
+
           {
             !this.state.isLoading && this.state.tasks.length === 0 ? (
               <div className="no-tasks-found">
@@ -153,9 +156,13 @@ class TaskList extends Component {
               </div>) : null
           }
           {
+
+
             this.state.isLoading ?
               <LoadingIndicator /> : null
+
           }
+
         </div>
       </div>
     );
