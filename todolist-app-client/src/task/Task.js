@@ -8,12 +8,14 @@ class Task extends Component {
   constructor(props) {
     super(props);
     this.task = this.props.task;
+
   }
 
 
   handleTooggle(event) {
     this.task.completed = event.target.checked;
     this.props.handleUpdateTask(this.task);
+
   }
   render() {
 
