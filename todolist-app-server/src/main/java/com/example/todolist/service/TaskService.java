@@ -34,7 +34,6 @@ public class TaskService {
 
   private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
-
   // Get all task not require user role
   public List<Task> getAllTasks() {
     return taskRepository.findAll();
@@ -75,8 +74,6 @@ public class TaskService {
     return getAllTaskByUserId(userId, page, size);
   }
 
-
-
   public TaskResponse getTaskById(Long taskId, UserPrincipal currentUser) {
     Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskId));
     // User only able to get task they own
@@ -93,12 +90,35 @@ public class TaskService {
     return ModelMapper.mapTaskToTaskResponse(task);
   }
 
-
-
   public TaskResponse createTask(TaskRequest taskRequest, UserPrincipal currentUser) {
     Task task = ModelMapper.mapTaskRequestToTask(taskRequest);
     taskRepository.save(task);
     return ModelMapper.mapTaskToTaskResponse(task);
+  }
+
+  public TaskResponse updateTask(TaskRequest taskRequest, UserPrincipal currentUser) {
+    Task existingTask = this.taskRepository.findById((taskRequest.getId()))
+        .orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskRequest.getId()));
+    if (!existingTask.getCreatedBy().equals(currentUser.getId())) {
+      throw new BadRequestException("Current user not own this task");
+    }
+    existingTask.setId((taskRequest.getId()));
+    existingTask.setTitle(taskRequest.getTitle());
+    existingTask.setNote((taskRequest.getNote()));
+    existingTask.setDue(taskRequest.getDue());
+    existingTask.setPriority(taskRequest.getPriority());
+    existingTask.setCompleted(taskRequest.getCompleted());
+    taskRepository.save(existingTask);
+    return ModelMapper.mapTaskToTaskResponse(existingTask);
+  }
+
+  public void deleteTask(TaskRequest taskRequest, UserPrincipal currentUser) {
+    Task existingTask = this.taskRepository.findById((taskRequest.getId()))
+        .orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskRequest.getId()));
+    if (!existingTask.getCreatedBy().equals(currentUser.getId())) {
+      throw new BadRequestException("Current user not own this task");
+    }
+    taskRepository.delete(existingTask);
   }
 
   // =================> Helper <===================

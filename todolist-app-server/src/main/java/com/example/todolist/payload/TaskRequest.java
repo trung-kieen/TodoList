@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.util.List;
 
 public class TaskRequest {
-
+  private Long id;
   @NotBlank
   @Size(max = 140)
   @Valid
@@ -32,6 +32,14 @@ public class TaskRequest {
 
 
 
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public Long getId() {
+    return id;
+  }
 
   public void setTitle(String title) {
     this.title = title;

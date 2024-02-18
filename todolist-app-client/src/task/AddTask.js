@@ -42,6 +42,7 @@ class AddTaskForm extends Component {
       if (!err) {
         console.log(values);
         const taskRequest = Object.assign({}, values);
+        // TODO update task
         // login(taskRequest)
         //   .then(response => {
         //     localStorage.setItem(ACCESS_TOKEN, response.accessToken);

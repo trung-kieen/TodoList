@@ -2,3 +2,5 @@
 tags
 todolist-app-server/script/setup-database.sql
 docs/UI_inspire.md
+.vim/
+.vim

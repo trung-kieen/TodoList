@@ -1,3 +1,5 @@
+import { notification } from "antd";
+import { APP_TITLE } from "../constants";
 
 export function formatDate(dateString) {
   const date = new Date(dateString);
@@ -58,5 +60,19 @@ export function  getTimeRemaining  (due)  {
     timeRemaining = "less than a second left";
   }
   return timeRemaining;
+}
+export function notificationSuccess(description){
+    notification.success({
+      message: APP_TITLE,
+      description: description,
+    });
+
+}
+export function notificationError(description){
+    notification.error({
+      message: APP_TITLE,
+      description: description,
+    });
+
 }
 
