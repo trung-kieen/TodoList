@@ -3,10 +3,11 @@ import { getAllTasks, getUserCreatedTasks, getUserVotedTasks } from '../util/API
 import Task from './Task';
 import { castVote } from '../util/APIUtils';
 import LoadingIndicator from '../common/LoadingIndicator';
-import { Button, Icon, notification } from 'antd';
+import { Button, Icon, notification, Modal } from 'antd';
 import { POLL_LIST_SIZE } from '../constants';
 import { withRouter } from 'react-router-dom';
 import './TaskList.css';
+import AddTaskForm from '../component/AddTaskForm';
 
 class TaskList extends Component {
   constructor(props) {
@@ -18,12 +19,23 @@ class TaskList extends Component {
       totalElements: 0,
       totalPages: 0,
       last: true,
-      isLoading: false
+      isLoading: false,
+      show: false,
     };
     this.loadTaskList = this.loadTaskList.bind(this);
     this.handleUpdateTask = this.handleUpdateTask.bind(this);
     this.handleLoadMore = this.handleLoadMore.bind(this);
+    this.showModal = this.showModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
   }
+
+  showModal = () => {
+    this.setState({ ...this.state, show: true });
+  };
+
+  hideModal = () => {
+    this.setState({ ...this.state, show: false });
+  };
 
   async loadTaskList(page = 0, size = POLL_LIST_SIZE) {
 
@@ -31,6 +43,7 @@ class TaskList extends Component {
       let respPage = await getAllTasks(page, size);
       const tasks = this.state.tasks.slice();
       this.setState({
+        ... this.state,
         isLoading: true
       });
       this.setState({
@@ -45,6 +58,7 @@ class TaskList extends Component {
     }
     finally {
       this.setState({
+        ... this.state,
         isLoading: false
       });
 
@@ -108,35 +122,46 @@ class TaskList extends Component {
     this.state.tasks.forEach((task) => {
       taskViews.push(<Task
         task={task}
+        key={task.id}
         handleUpdateTask={this.handleUpdateTask}
       />)
     });
 
     return (
-      <div className="tasks-container">
-        {taskViews}
-        {
-          !this.state.isLoading && this.state.tasks.length === 0 ? (
-            <div className="no-tasks-found">
-              <span>No Tasks Found.</span>
-            </div>
-          ) : null
-        }
-        {
-          !this.state.isLoading && !this.state.last ? (
-            <div className="load-more-tasks">
-              <Button type="dashed" onClick={this.handleLoadMore} disabled={this.state.isLoading}>
-                <Icon type="plus" /> Load more
-              </Button>
-            </div>) : null
-        }
-        {
-          this.state.isLoading ?
-            <LoadingIndicator /> : null
-        }
+      <div>
+        <div>
+        </div>
+        <div className="tasks-container">
+          <Button type="button" onClick={this.showModal}>
+            Add task
+          </Button>
+          <AddTaskForm show={this.state.show} handleClose={this.hideModal} />
+          {taskViews}
+          {
+            !this.state.isLoading && this.state.tasks.length === 0 ? (
+              <div className="no-tasks-found">
+                <span>No Tasks Found.</span>
+              </div>
+            ) : null
+          }
+          {
+            !this.state.isLoading && !this.state.last ? (
+              <div className="load-more-tasks">
+                <Button type="dashed" onClick={this.handleLoadMore} disabled={this.state.isLoading}>
+                  <Icon type="plus" /> Load more
+                </Button>
+              </div>) : null
+          }
+          {
+            this.state.isLoading ?
+              <LoadingIndicator /> : null
+          }
+        </div>
       </div>
     );
+
   }
+
 }
 
 export default withRouter(TaskList);
