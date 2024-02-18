@@ -60,7 +60,16 @@ public class TaskController {
     return ResponseEntity.ok(taskService.updateTask(taskRequest, currentUser));
   }
 
+  @DeleteMapping("/{taskId}")
+  @PreAuthorize("hasRole('USER')")
+  public ResponseEntity<?> deleteTask(@CurrentUser UserPrincipal currentUser,
+      @PathVariable Long taskId) {
+    taskService.deleteTaskById(taskId, currentUser);
+    return ResponseEntity.ok("Delete task success");
+  }
+
   @DeleteMapping
+  @PreAuthorize("hasRole('USER')")
   public ResponseEntity<?> deleteTask(@CurrentUser UserPrincipal currentUser,
       @Valid @RequestBody TaskRequest taskRequest) {
     taskService.deleteTask(taskRequest, currentUser);

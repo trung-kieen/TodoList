@@ -113,14 +113,17 @@ public class TaskService {
   }
 
   public void deleteTask(TaskRequest taskRequest, UserPrincipal currentUser) {
-    Task existingTask = this.taskRepository.findById((taskRequest.getId()))
-        .orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskRequest.getId()));
+    deleteTaskById(taskRequest.getId(), currentUser);
+  }
+
+  public void deleteTaskById(Long taskId, UserPrincipal currentUser) {
+    Task existingTask = this.taskRepository.findById((taskId))
+        .orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskId));
     if (!existingTask.getCreatedBy().equals(currentUser.getId())) {
       throw new BadRequestException("Current user not own this task");
     }
     taskRepository.delete(existingTask);
   }
-
   // =================> Helper <===================
 
   private void validatePageNumberAndSize(int page, int size) {
@@ -134,7 +137,7 @@ public class TaskService {
   }
 
   private PagedResponse<TaskResponse> getAllTaskByUserId(Long userId, int page, int size) {
-    Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
+    Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "due");
     Page<Task> tasks = taskRepository.findByCreatedBy(userId, pageable);
 
     List<TaskResponse> taskResponses;

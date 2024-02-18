@@ -4,3 +4,4 @@ todolist-app-server/script/setup-database.sql
 docs/UI_inspire.md
 .vim/
 .vim
+todolist-app-client/node_modules/
