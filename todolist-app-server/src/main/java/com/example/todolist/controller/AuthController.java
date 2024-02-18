@@ -11,6 +11,8 @@ import com.example.todolist.payload.SignUpRequest;
 import com.example.todolist.repository.RoleRepository;
 import com.example.todolist.repository.UserRepository;
 import com.example.todolist.security.JwtTokenProvider;
+import com.example.todolist.service.TaskService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,8 +50,10 @@ public class AuthController {
     @Autowired
     JwtTokenProvider tokenProvider;
 
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

@@ -38,7 +38,7 @@ class App extends Component {
       placement: 'topRight',
       top: 70,
       duration: 3,
-    });    
+    });
   }
 
   loadCurrentUser() {
@@ -52,7 +52,7 @@ class App extends Component {
     }).catch(error => {
       this.setState({
         isLoading: false
-      });  
+      });
     });
   }
 
@@ -69,16 +69,16 @@ class App extends Component {
     });
 
     this.props.history.push(redirectTo);
-    
+
     notification[notificationType]({
-      message: 'Tasking App',
+      message: 'Todo App',
       description: description,
     });
   }
 
   handleLogin() {
     notification.success({
-      message: 'Tasking App',
+      message: 'Todo App',
       description: "You're successfully logged in.",
     });
     this.loadCurrentUser();
@@ -89,24 +89,24 @@ class App extends Component {
     if(this.state.isLoading) {
       return <LoadingIndicator />
     }
-    
+
     return (
         <Layout className="app-container">
-          <AppHeader isAuthenticated={this.state.isAuthenticated} 
-            currentUser={this.state.currentUser} 
+          <AppHeader isAuthenticated={this.state.isAuthenticated}
+            currentUser={this.state.currentUser}
             onLogout={this.handleLogout} />
 
           <Content className="app-content">
             <div className="container">
-              <Switch>      
-                <Route exact path="/" 
-                  render={(props) => <TaskList isAuthenticated={this.state.isAuthenticated} 
+              <Switch>
+                <Route exact path="/"
+                  render={(props) => <TaskList isAuthenticated={this.state.isAuthenticated}
                       currentUser={this.state.currentUser} handleLogout={this.handleLogout} {...props} />}>
                 </Route>
-                <Route path="/login" 
+                <Route path="/login"
                   render={(props) => <Login onLogin={this.handleLogin} {...props} />}></Route>
                 <Route path="/signup" component={Signup}></Route>
-                <Route path="/users/:username" 
+                <Route path="/users/:username"
                   render={(props) => <Profile isAuthenticated={this.state.isAuthenticated} currentUser={this.state.currentUser} {...props}  />}>
                 </Route>
                 <PrivateRoute authenticated={this.state.isAuthenticated} path="/task/new" component={NewTask} handleLogout={this.handleLogout}></PrivateRoute>

@@ -8,15 +8,15 @@ public class UserProfile {
     private String name;
     private Instant joinedAt;
     private Long taskCount;
-    private Long voteCount;
+    private Long label;
 
-    public UserProfile(Long id, String username, String name, Instant joinedAt, Long taskCount, Long voteCount) {
+    public UserProfile(Long id, String username, String name, Instant joinedAt, Long taskCount, Long label) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.joinedAt = joinedAt;
         this.taskCount = taskCount;
-        this.voteCount = voteCount;
+        this.label = label;
     }
 
     public Long getId() {
@@ -59,11 +59,11 @@ public class UserProfile {
         this.taskCount = taskCount;
     }
 
-    public Long getVoteCount() {
-        return voteCount;
+    public Long getLabel() {
+        return label;
     }
 
-    public void setVoteCount(Long voteCount) {
-        this.voteCount = voteCount;
+    public void setLabel(Long voteCount) {
+        this.label = voteCount;
     }
 }

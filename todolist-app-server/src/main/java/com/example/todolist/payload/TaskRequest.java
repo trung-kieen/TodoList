@@ -4,43 +4,73 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import java.time.Instant;
 import java.util.List;
 
 public class TaskRequest {
-    @NotBlank
-    @Size(max = 140)
-    private String question;
 
-    @NotNull
-    @Size(min = 2, max = 6)
-    @Valid
-    private List<ChoiceRequest> choices;
+  @NotBlank
+  @Size(max = 140)
+  @Valid
+  private String title;
 
-    @NotNull
-    @Valid
-    private TaskLength taskLength;
+  @NotBlank
+  @Size(max = 140)
+  @Valid
+  private String note;
 
-    public String getQuestion() {
-        return question;
-    }
 
-    public void setQuestion(String question) {
-        this.question = question;
-    }
+  // TODO: Valid due is future ???
+  private Instant due;
 
-    public List<ChoiceRequest> getChoices() {
-        return choices;
-    }
 
-    public void setChoices(List<ChoiceRequest> choices) {
-        this.choices = choices;
-    }
+  private int priority;
 
-    public TaskLength getTaskLength() {
-        return taskLength;
-    }
 
-    public void setTaskLength(TaskLength taskLength) {
-        this.taskLength = taskLength;
-    }
+  private Boolean completed;
+
+
+
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setNote(String note) {
+    this.note = note;
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  public int getPriority() {
+    return priority;
+  }
+
+  public void setPriority(int priority) {
+    this.priority = priority;
+  }
+
+  public Boolean getCompleted() {
+    return completed;
+  }
+
+  public void setCompleted(Boolean completed) {
+    this.completed = completed;
+  }
+
+  public Instant getDue() {
+    return due;
+  }
+
+  public void setDue(Instant due) {
+    this.due = due;
+  }
+
 }
