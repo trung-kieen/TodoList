@@ -29,7 +29,6 @@ public class Task extends UserAudit  {
   private String title;
 
   @Column
-  @NotBlank
   @Size(max = 140)
   private String note;
 

@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 
 import { getCurrentUser } from '../util/APIUtils';
-import { ACCESS_TOKEN, NOTIFICATION_CONFIG } from '../constants';
+import { ACCESS_TOKEN, APP_TITLE, NOTIFICATION_CONFIG } from '../constants';
 
 import TaskList from '../task/TaskList';
 import NewTask from '../task/NewTask';
@@ -20,7 +20,6 @@ import LoadingIndicator from '../common/LoadingIndicator';
 import PrivateRoute from '../common/PrivateRoute';
 
 import { Layout, notification } from 'antd';
-import { notificationSuccess } from '../util/Helpers';
 const { Content } = Layout;
 
 class App extends Component {
@@ -68,13 +67,13 @@ class App extends Component {
     this.props.history.push(redirectTo);
 
     notification[notificationType]({
-      message: 'Todo App',
+      message: APP_TITLE,
       description: description,
     });
   }
 
   handleLogin() {
-    notificationSuccess("You're successfully logged in.")
+    notification.success({ message: APP_TITLE, description: "You're successfully logged in." });
     this.loadCurrentUser();
     this.props.history.push("/");
   }

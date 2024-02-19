@@ -61,18 +61,3 @@ export function  getTimeRemaining  (due)  {
   }
   return timeRemaining;
 }
-export function notificationSuccess(description){
-    notification.success({
-      message: APP_TITLE,
-      description: description,
-    });
-
-}
-export function notificationError(description){
-    notification.error({
-      message: APP_TITLE,
-      description: description,
-    });
-
-}
-

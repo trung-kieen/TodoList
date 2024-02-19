@@ -15,7 +15,6 @@ public class TaskRequest {
   @Valid
   private String title;
 
-  @NotBlank
   @Size(max = 140)
   @Valid
   private String note;

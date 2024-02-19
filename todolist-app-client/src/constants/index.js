@@ -23,3 +23,34 @@ export const NOTIFICATION_CONFIG = {
   top: 70,
   duration: 3,
 }
+export const DEFAULT_PAGE = {
+  tasks: [],
+  page: 0,
+  size: 10,
+  totalElements: 0,
+  totalPages: 0,
+  last: true,
+  isLoading: false,
+  show: false,
+};
+
+export const DEMO_PAGE = {
+  tasks: [{ id: 1, title: "Get up early", note: "before 10pm", completed: true },
+  { id: 2, title: "Learn new language", note: "have a good plan", completed: false }],
+  page: 1,
+  size: 10,
+  totalElements: 2,
+  totalPages: 1,
+  last: true,
+  isLoading: false
+}
+
+export const EMPTY_TASK = {
+  id: null,
+  title: "Default task title",
+  note: "Default task note",
+  due: null,
+  priority: "1",
+  completed: false,
+}
+

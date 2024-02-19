@@ -1,62 +1,62 @@
 import React, { Component } from 'react';
-import { getAllTasks } from '../util/APIUtils';
+import { createTask, getAllTasks, updateTask } from '../util/APIUtils';
 import Task from './Task';
 import LoadingIndicator from '../common/LoadingIndicator';
-import { Button, Icon } from 'antd';
-import { POLL_LIST_SIZE } from '../constants';
+import { Button, Icon, notification } from 'antd';
+import { APP_TITLE, DEFAULT_PAGE, DEMO_PAGE, EMPTY_TASK, NOTIFICATION_CONFIG, POLL_LIST_SIZE } from '../constants';
 import { withRouter } from 'react-router-dom';
 import './TaskList.css';
-import AddTask from './AddTask';
+import TaskModal from './TaskModal';
 
 class TaskList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: [],
-      page: 0,
-      size: 10,
-      totalElements: 0,
-      totalPages: 0,
-      last: true,
-      isLoading: false,
-      show: false,
+      ...DEFAULT_PAGE,
+      modal: {
+        show: false, task: EMPTY_TASK,
+        type: "add",
+      }
     };
+
     this.loadTaskList = this.loadTaskList.bind(this);
-    this.handleUpdateTask = this.handleUpdateTask.bind(this);
-    this.handleLoadMore = this.handleLoadMore.bind(this);
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
+    this.handleAddTask = this.handleAddTask.bind(this);
+    this.handleUpdateTask = this.handleUpdateTask.bind(this);
+    this.handleLoadMore = this.handleLoadMore.bind(this);
+    this.handleClickEdit = this.handleClickEdit.bind(this);
+    this.handleClickAdd = this.handleClickAdd.bind(this);
+    this.handleUpdateTask = this.handleUpdateTask.bind(this);
+    this.updateTaskState = this.updateTaskState.bind(this);
+
+    notification.config(NOTIFICATION_CONFIG);
   }
 
   showModal() {
-    this.setState({ ...this.state, show: true });
+    this.setState({ ...this.state, modal: { ...this.state.modal, show: true } });
   };
 
   hideModal() {
-    this.setState({ ...this.state, show: false });
+    this.setState({ ...this.state, modal: { ...this.state.modal, show: false } });
   };
 
   async loadTaskList(page = 0, size = POLL_LIST_SIZE) {
-
     try {
-      let respPage = await getAllTasks(page, size);
-      const tasks = this.state.tasks.slice();
       this.setState({
         ... this.state,
         isLoading: true
       });
+      let respPage = await getAllTasks(page, size);
+      const tasks = this.state.tasks.slice();
       this.setState({
+        ...respPage,
         tasks: tasks.concat(respPage.content),
-        page: respPage.page,
-        size: respPage.size,
-        totalElements: respPage.totalElements,
-        totalPages: respPage.totalPages,
-        last: respPage.last,
         isLoading: false,
-        show: false
-
+        modal: { ... this.state.modal }
       })
     }
+
     finally {
       this.setState({
         ... this.state,
@@ -65,37 +65,29 @@ class TaskList extends Component {
 
     }
   }
-
   loadDemoTaskList() {
-    this.setState({
-      tasks: [{ id: 1, title: "Get up early", note: "before 10pm", completed: true },
-      { id: 2, title: "Learn new language", note: "have a good plan", completed: false }],
-      page: 1,
-      size: 10,
-      totalElements: 2,
-      totalPages: 1,
-      last: true,
-      isLoading: false
-    })
+    this.setState(DEMO_PAGE)
 
   }
+
+  async handleAddTask(taskData) {
+    try {
+      let respTask = await createTask(taskData)
+      this.addTaskState(respTask);
+      this.hideModal();
+      notification.success({ message: APP_TITLE, description: "Create task success" })
+    } catch (e) {
+      notification.error({ message: APP_TITLE, description: toString(e) })
+    }
+  }
   componentDidMount() {
-    // this.loadTaskList();
-    this.loadDemoTaskList();
+    this.loadTaskList();
   }
 
   componentDidUpdate(nextProps) {
     if (this.props.isAuthenticated !== nextProps.isAuthenticated) {
       // Reset State
-      this.setState({
-        tasks: [],
-        page: 0,
-        size: 10,
-        totalElements: 0,
-        totalPages: 0,
-        last: true,
-        isLoading: false
-      });
+      this.setState(DEFAULT_PAGE);
       this.loadTaskList();
     }
   }
@@ -104,19 +96,35 @@ class TaskList extends Component {
     this.loadTaskList(this.state.page + 1);
   }
 
-  // TODO copy cat with deleted task
-  handleUpdateTask(newTask) {
-    // TODO: request update to server => Push result at notification
-    let newTasks = this.state.tasks.map(oldTask => {
-      return oldTask.id === newTask.id ? newTask : oldTask
-    })
-    console.log(this.state.tasks);
+  handleClickAdd() {
     this.setState({
-      // Copy old property value of this object
-      ...this.state,
-      // Update value of single change task
-      tasks: newTasks,
+      ...this.state, modal: {
+        show: true,
+        type: "add",
+      }
     })
+  }
+  handleClickEdit(taskData) {
+    this.setState({
+      ...this.state, modal: {
+        task: taskData,
+        show: true,
+        type: "edit"
+      }
+    })
+  }
+
+  // TODO copy cat with deleted task
+  async handleUpdateTask(newTask) {
+    try {
+      let taskResponse = await updateTask(newTask);
+      this.updateTaskState(taskResponse);
+      this.hideModal();
+      notification.success({ message: APP_TITLE, description: "Update task success" })
+    } catch (e) {
+      notification.error({ message: APP_TITLE, description: toString(e) })
+
+    }
   }
   render() {
     const taskViews = [];
@@ -125,6 +133,7 @@ class TaskList extends Component {
         task={task}
         key={task.id}
         handleUpdateTask={this.handleUpdateTask}
+        handleClickDetail={this.handleClickEdit}
       />)
     });
 
@@ -134,11 +143,16 @@ class TaskList extends Component {
         <div>
         </div>
         <div className="tasks-container">
-          <Button type="button" onClick={this.showModal}>
-            Add task
-          </Button>
+          <div className="add-task-container">
+            <Button className="add-task-button" type="button" onClick={this.showModal}>
+              Add task
+            </Button>
+            {this.state.modal.type === "add" ?
+              <TaskModal show={this.state.modal.show} okText="Add" onCancel={this.hideModal} onOk={this.handleAddTask} task={EMPTY_TASK} /> :
+              <TaskModal show={this.state.modal.show} okText="Save" onCancel={this.hideModal} onOk={this.handleUpdateTask} task={this.state.modal.task} />
+            }
+          </div>
           {taskViews}
-          <AddTask show={this.state.show} onCancel={() => { this.hideModal() }} onCreate={() => { console.log("create") }}  />
 
           {
             !this.state.isLoading && this.state.tasks.length === 0 ? (
@@ -156,19 +170,32 @@ class TaskList extends Component {
               </div>) : null
           }
           {
-
-
             this.state.isLoading ?
               <LoadingIndicator /> : null
-
           }
-
         </div>
       </div>
     );
 
   }
 
+  // ====================> Helper function <=======================
+  updateTaskState(newTask) {
+    let newTasks = this.state.tasks.map(oldTask => {
+      return oldTask.id === newTask.id ? newTask : oldTask
+    })
+    this.setState({
+      // Copy old property value of this object
+      ...this.state,
+      // Update value of single change task
+      tasks: newTasks,
+    })
+    return newTasks;
+  }
+
+  addTaskState(newTask) {
+    this.setState({ ...this.state, tasks: [newTask, ... this.state.tasks] });
+  }
 }
 
 export default withRouter(TaskList);
