@@ -5,3 +5,5 @@ docs/UI_inspire.md
 .vim/
 .vim
 todolist-app-client/node_modules/
+todolist-app-client/node_modules/*
+

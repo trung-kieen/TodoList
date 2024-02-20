@@ -11,103 +11,106 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {
-            "username"
-        }),
-        @UniqueConstraint(columnNames = {
-            "email"
-        })
+    @UniqueConstraint(columnNames = {
+        "username"
+    }),
+    @UniqueConstraint(columnNames = {
+        "email"
+    })
 })
 public class User extends DateAudit {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @NotBlank
-    @Size(max = 40)
-    @Column
-    private String name;
+  @NotBlank
+  @Size(max = 40)
+  @Column
+  private String name;
 
-    @NotBlank
-    @Size(max = 15)
-    @Column
-    private String username;
+  @NotBlank
+  @Size(max = 15)
+  @Column
+  private String username;
 
-    @NaturalId
-    @NotBlank
-    @Size(max = 40)
-    @Email
-    @Column
-    private String email;
+  @NaturalId
+  @NotBlank
+  @Size(max = 40)
+  @Email
+  @Column
+  private String email;
 
-    @NotBlank
-    @Size(max = 100)
-    @Column
-    private String password;
+  @NotBlank
+  @Size(max = 100)
+  @Column
+  private String password;
 
-    @Column
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+  @Column
+  @OneToMany(fetch = FetchType.LAZY)
+  @JoinTable(name = "create_by")
+  private Set<Task> tasks;
 
-    public User() {
+  @Column
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+  private Set<Role> roles = new HashSet<>();
 
-    }
+  public User() {
 
-    public User(String name, String username, String email, String password) {
-        this.name = name;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public User(String name, String username, String email, String password) {
+    this.name = name;
+    this.username = username;
+    this.email = email;
+    this.password = password;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public String getUsername() {
-        return username;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+  public String getUsername() {
+    return username;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
+  public Set<Role> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(Set<Role> roles) {
+    this.roles = roles;
+  }
 }

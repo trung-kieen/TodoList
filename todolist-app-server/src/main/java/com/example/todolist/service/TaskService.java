@@ -92,6 +92,7 @@ public class TaskService {
 
   public TaskResponse createTask(TaskRequest taskRequest, UserPrincipal currentUser) {
     Task task = ModelMapper.mapTaskRequestToTask(taskRequest);
+    task.setCreatedBy(currentUser.getId());
     taskRepository.save(task);
     return ModelMapper.mapTaskToTaskResponse(task);
   }

@@ -35,13 +35,18 @@ class TaskForm extends Component {
   handleOk() {
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const taskRequest = Object.assign({}, values);
-        this.props.onOk(taskRequest);
+        // const taskRequest = Object.assign({}, values);
+        this.props.onOk(values);
       }
     });
   }
 
   loadTaskContent() {
+    // Object.entries(this.props.task).forEach(([key, value]) => {
+    //   if (undefined !== this.props.form.getFieldValue[key]){
+    //     this.props.form.setFieldsValue({ [key]: value });
+    //   }
+    // });
     this.props.form.setFieldsValue(this.props.task);
   }
   componentDidMount() {
@@ -53,6 +58,7 @@ class TaskForm extends Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <Form className="add-task-form">
+
         <Modal
           title={this.props.formTitle}
           visible={this.props.show}
@@ -60,14 +66,23 @@ class TaskForm extends Component {
           onCancel={this.props.onCancel}
           onOk={this.handleOk}
         >
-          <FormItem label="Task id">
+          <FormItem >
             {getFieldDecorator('id', {
+              initialValue: {}
+            })(
+              <Input type='hidden' />
+            )}
+          </FormItem>
+          <FormItem >
+            {getFieldDecorator('completed', {
+              initialValue: {}
             })(
               <Input type='hidden' />
             )}
           </FormItem>
           <FormItem label="Task title">
             {getFieldDecorator('title', {
+              initialValue: {},
               rules: [{ required: true, message: 'Please enter task title!' }],
             })(
               <Input
@@ -79,6 +94,7 @@ class TaskForm extends Component {
           </FormItem>
           <FormItem label="Note">
             {getFieldDecorator('note', {
+              initialValue: {},
             })(
               <Input
                 size="large"
@@ -88,6 +104,7 @@ class TaskForm extends Component {
           </FormItem>
           <FormItem label="Due date">
             {getFieldDecorator('due', {
+              initialValue: {},
             })(
               <DatePicker
                 style={{ width: "100%" }}
@@ -100,10 +117,10 @@ class TaskForm extends Component {
 
           <FormItem label="Priority">
             {getFieldDecorator('priority', {
+              initialValue: {},
               valuePropName: 'value',
             })(
               <Select
-                value=""
                 style={{ width: 120 }}
                 defaultActiveFirstOption={true}
 
