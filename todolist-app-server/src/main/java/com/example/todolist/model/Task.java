@@ -2,6 +2,9 @@ package com.example.todolist.model;
 
 import com.example.todolist.model.audit.UserAudit;
 import com.example.todolist.model.audit.UserDateAudit;
+
+import net.bytebuddy.implementation.bind.annotation.Default;
+
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -26,7 +29,6 @@ public class Task extends UserAudit  {
   private String title;
 
   @Column
-  @NotBlank
   @Size(max = 140)
   private String note;
 
@@ -37,7 +39,7 @@ public class Task extends UserAudit  {
   @Column
   private int priority;
 
-  @Column(columnDefinition = "boolean default false")
+  @Column(columnDefinition = "boolean default false" )
   private Boolean completed;
 
 

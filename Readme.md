@@ -1,5 +1,3 @@
-## Building a Full Stack Tasks app similar to twitter todolist with Spring Boot, Spring Security, JWT, React and Ant Design
-
 ## Steps to Setup the Spring Boot Back end app (todolist-app-server)
 
 1. **Clone the application**

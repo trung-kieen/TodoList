@@ -26,34 +26,54 @@ import java.net.URI;
 @RequestMapping("/api/tasks")
 public class TaskController {
 
+  @Autowired
+  private TaskService taskService;
 
-    @Autowired
-    private TaskService taskService;
+  private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
-    private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
+  @GetMapping
+  public PagedResponse<TaskResponse> getTasks(@CurrentUser UserPrincipal currentUser,
+      @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
+      @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
+    return taskService.getTasksCreatedBy(currentUser, page, size);
+  }
 
-    @GetMapping
-    public PagedResponse<TaskResponse> getTasks(@CurrentUser UserPrincipal currentUser,
-            @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
-            @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-            return taskService.getTasksCreatedBy(currentUser, page, size);
-    }
+  @PostMapping
+  @PreAuthorize("hasRole('USER')")
+  public ResponseEntity<?> createTask(@CurrentUser UserPrincipal currentUser,
+      @Valid @RequestBody TaskRequest taskRequest) {
+    TaskResponse task = taskService.createTask(taskRequest, currentUser);
+    return ResponseEntity.ok(task);
+  }
 
-    @PostMapping
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> createTask(@CurrentUser UserPrincipal currentUser, @Valid @RequestBody TaskRequest taskRequest) {
-        TaskResponse task = taskService.createTask(taskRequest, currentUser);
-        return ResponseEntity.ok(task);
-    }
+  @GetMapping("/{taskId}")
+  @PreAuthorize("hasRole('USER')")
+  public ResponseEntity<TaskResponse> getTaskById(@CurrentUser UserPrincipal currentUser,
+      @PathVariable Long taskId) {
+    return ResponseEntity.ok(taskService.getTaskById(taskId, currentUser));
+  }
 
-    @GetMapping("/{taskId}")
-    public TaskResponse getTaskById(@CurrentUser UserPrincipal currentUser,
-            @PathVariable Long taskId) {
-        return taskService.getTaskById(taskId, currentUser);
-    }
+  @PutMapping
+  @PreAuthorize("hasRole('USER')")
+  public ResponseEntity<?> updateTask(@CurrentUser UserPrincipal currentUser,
+      @Valid @RequestBody TaskRequest taskRequest) {
+    return ResponseEntity.ok(taskService.updateTask(taskRequest, currentUser));
+  }
 
+  @DeleteMapping("/{taskId}")
+  @PreAuthorize("hasRole('USER')")
+  public ResponseEntity<?> deleteTask(@CurrentUser UserPrincipal currentUser,
+      @PathVariable Long taskId) {
+    taskService.deleteTaskById(taskId, currentUser);
+    return ResponseEntity.ok("Delete task success");
+  }
 
-
-
+  @DeleteMapping
+  @PreAuthorize("hasRole('USER')")
+  public ResponseEntity<?> deleteTask(@CurrentUser UserPrincipal currentUser,
+      @Valid @RequestBody TaskRequest taskRequest) {
+    taskService.deleteTask(taskRequest, currentUser);
+    return ResponseEntity.ok("Delete task success");
+  }
 
 }
