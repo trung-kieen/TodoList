@@ -59,7 +59,6 @@ class TaskList extends Component {
       });
 
     }
-    console.log(this.state.tasks.length);
   }
   loadDemoTaskList() {
     this.setState(DEMO_PAGE)
@@ -93,10 +92,6 @@ class TaskList extends Component {
       />)
     });
 
-    // {this.state.modal.type === "ADD" ?
-    //   <TaskModal show={this.state.modal.show} okText="Add" onCancel={this.hideModalAdd} onOk={this.handleAddTask} task={EMPTY_TASK} /> :
-    //   <TaskModal show={this.state.modal.show} okText="Save" onCancel={this.hideModalAdd} onOk={this.handleUpdateTask} task={this.state.modal.task} />
-    // }
     return (
       <div>
         <div>
@@ -106,10 +101,10 @@ class TaskList extends Component {
             <Button className="add-task-button" type="button" onClick={this.handleClickAdd}>
               Add task
             </Button>
-            <TaskModal show={this.state.modal.add.show} okText="Add" onCancel={this.hideModalAdd} onOk={this.handleAddTask} task={EMPTY_TASK} />
+            <TaskModal show={this.state.modal.add.show} showCheckbox={false} okText="Add" onCancel={this.hideModalAdd} onOk={this.handleAddTask} task={EMPTY_TASK} />
           </div>
           <div className="edit-task-container">
-            <TaskModal show={this.state.modal.edit.show} okText="Save" onCancel={this.hideModalEdit} onOk={this.handleUpdateTask} task={this.state.modal.task} />
+            <TaskModal show={this.state.modal.edit.show} showCheckbox={true} okText="Save" onCancel={this.hideModalEdit} onOk={this.handleUpdateTask} task={this.state.modal.task} />
           </div>
           {taskViews}
 
@@ -146,10 +141,10 @@ class TaskList extends Component {
     this.setState({ ...this.state, modal: { ...this.state.modal, edit: { show: true } } });
   };
   hideModalAdd() {
-    this.setState({ ...this.state, modal: { ...this.state.modal, add: { show : false } } });
+    this.setState({ ...this.state, modal: { ...this.state.modal, add: { show: false } } });
   };
   hideModalEdit() {
-    this.setState({ ...this.state, modal: { ...this.state.modal, edit: { show : false } } });
+    this.setState({ ...this.state, modal: { ...this.state.modal, edit: { show: false } } });
   };
   handleClickAdd() {
     this.showModalAdd();
@@ -166,11 +161,9 @@ class TaskList extends Component {
 
   // TODO copy cat with deleted task
   async handleUpdateTask(newTask) {
-    console.log("Update");
     try {
       let taskResponse = await updateTask(newTask);
       this.updateTaskState(taskResponse);
-      notification.success({ message: APP_TITLE, description: "Update task success" })
     } catch (e) {
       notification.error({ message: APP_TITLE, description: toString(e) })
 
@@ -178,8 +171,8 @@ class TaskList extends Component {
   }
 
   async handleAddTask(taskData) {
-    console.log("Create")
     try {
+      console.log(taskData);
       let respTask = await createTask(taskData)
       this.addTaskState(respTask);
       notification.success({ message: APP_TITLE, description: "Create task success" })
@@ -191,7 +184,6 @@ class TaskList extends Component {
   updateTaskState(newTask) {
     let newTasks = this.state.tasks.slice();
     newTasks = [newTask, ...newTasks.filter((task) => task.id !== newTask.id)];
-    console.log(newTasks);
     this.setState({
       // Copy old property value of this object
       ...this.state,
@@ -200,14 +192,12 @@ class TaskList extends Component {
     })
     this.hideModalEdit();
     this.forceUpdate();
-    console.log(this.state.tasks)
     this.forceUpdate();
   }
 
   addTaskState(newTask) {
     const newTasks = this.state.tasks.slice();
     this.setState({ ...this.state, tasks: newTasks.concat(newTask), modal: { ... this.state.modal, show: false } });
-    console.log(this.state.tasks.length);
     this.hideModalAdd();
     this.forceUpdate();
   }

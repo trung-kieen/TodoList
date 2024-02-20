@@ -29,11 +29,11 @@ class AppHeader extends Component {
                 <Icon type="home" className="nav-icon" />
               </Link>
             </Menu.Item>,
-            <Menu.Item key="/task/new">
-            <Link to="/task/new">
-              <img src={taskIcon} alt="task" className="task-icon" />
-            </Link>
-          </Menu.Item>,
+            // <Menu.Item key="/task/new">
+            // <Link to="/task/new">
+            //   <img src={taskIcon} alt="task" className="task-icon" />
+            // </Link>
+          // </Menu.Item>,
           <Menu.Item key="/profile" className="profile-menu">
                 <ProfileDropdownMenu
                   currentUser={this.props.currentUser}

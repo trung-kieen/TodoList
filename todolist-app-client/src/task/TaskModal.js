@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Form, Input, notification, DatePicker, Modal, Select } from 'antd';
+import { Form, Input, notification, DatePicker, Modal, Select, Checkbox } from 'antd';
 import { EMPTY_TASK } from '../constants';
 const FormItem = Form.Item;
 
 class TaskModal extends Component {
-  constructor(props, okText, onOk, task, onCancel, show) {
-    super(props, okText, onOk, task, onCancel, show);
+  constructor(props, okText, onOk, task, onCancel, show, showCheckbox) {
+    super(props, okText, onOk, task, onCancel, show, showCheckbox);
     if (!this.props.hasOwnProperty("task")) {
       this.props = {
         ... this.props,
@@ -85,11 +85,24 @@ class TaskForm extends Component {
               initialValue: {},
               rules: [{ required: true, message: 'Please enter task title!' }],
             })(
-              <Input
-                autoFocus={true}
-                size="large"
-                name="title"
-                placeholder="Summary task" />
+              <span>
+                {
+                  (<del>
+                    <Input
+                      prefix={
+                        getFieldDecorator('completed', {
+                        })(
+                          <Checkbox disabled={!this.props.showCheckbox} name='completed' />
+                        )
+                      }
+                      autoFocus={true}
+                      size="large"
+                      name="title"
+                      placeholder="Summary task" />
+                  </del>)
+                }
+
+              </span>
             )}
           </FormItem>
           <FormItem label="Note">
