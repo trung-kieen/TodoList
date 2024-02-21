@@ -11,6 +11,7 @@ backup_file="$database_folder/database-struct.sql"
 
 
 mysqldump -u $user -p$password  --no-data --all-databases > $backup_file
+mysqldump -u $user -p$password  --no-data $database > $backup_file
 
 # Remove log line 
 grep -v '^\/\*!.*' "$backup_file" > "${backup_file}.tmp"

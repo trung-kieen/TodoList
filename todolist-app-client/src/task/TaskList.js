@@ -7,6 +7,7 @@ import { APP_TITLE, DEFAULT_PAGE, DEMO_PAGE, EMPTY_TASK, NOTIFICATION_CONFIG, PO
 import { withRouter } from 'react-router-dom';
 import './TaskList.css';
 import TaskModal from './TaskModal';
+import { FileAddOutlined, PlusOutlined } from '@ant-design/icons';
 
 class TaskList extends Component {
   constructor(props) {
@@ -98,7 +99,7 @@ class TaskList extends Component {
         </div>
         <div className="tasks-container">
           <div className="add-task-container">
-            <Button className="add-task-button" type="button" onClick={this.handleClickAdd}>
+            <Button  className="add-task-button" type="primary" onClick={this.handleClickAdd}>
               Add task
             </Button>
             <TaskModal show={this.state.modal.add.show} showCheckbox={false} okText="Add" onCancel={this.hideModalAdd} onOk={this.handleAddTask} task={EMPTY_TASK} />

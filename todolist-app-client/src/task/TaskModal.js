@@ -57,7 +57,7 @@ class TaskForm extends Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <Form className="add-task-form">
+      <Form  className="add-task-form">
 
         <Modal
           title={this.props.formTitle}
